@@ -6,7 +6,7 @@
 
 $type = $_POST["type"];
 $date = $_POST["date"];
-$y = 434/13;
+$y = 434/39;
 
 if ($type == "date") {
 	$message = $_POST["message"];
@@ -35,9 +35,7 @@ if ($type == "date") {
 	$month = substr($date, 5, 2);
 	$day = substr($date, 8, 2);
 
-	//ADD TIMECLICK (IN PROGRESS)
 	//ADD ERROR: NO GRAPH/MOVIE FOR THIS DATE (LOW PRIORITY)
-	//WORK ON SPEED PROBLEM (LOW PRIORITY)
 	
 	$picurl = "http://ovsa.njit.edu/flaremon/daily/$year/XSP$year$month$day.png";
 	$pic = "<img src='$picurl' usemap='#workmap'>
@@ -54,8 +52,24 @@ if ($type == "date") {
 	$movie ="<iframe src='$movieurl' id='movie' width=700 height=860></iframe>";
 
 	echo "$date";
-	echo "$pic<br>";
-	echo "$movie<br>";
+	
+	//FIX THIS
+	$file_headers = @get_headers($pic);
+	if(!$file_headers || $file_headers[0] == '404 Not Found') {
+		echo "<img src='no_graph.png'>";
+	}
+	else {
+		echo "$pic<br>";
+	}
+	
+	$file_headers = @get_headers($movie);
+	if(!$file_headers || $file_headers[0] == '404 Not Found') {
+		echo "<img src='no_movie.png'>";
+	}
+	else {
+		echo "$movie<br>";
+	}
+	
 }
 
 else if ($type == "time") {
@@ -64,8 +78,6 @@ else if ($type == "time") {
 	$time = floor($time * 46800/(868 / $y));
 	$date = date("Y-m-d H:i:s", strtotime($date) + $time);
 	$date2 = date("Y-m-d H:i:s", strtotime($date) + floor(46800/(868 / $y)));
-	echo "Date-time: $date<br>";
-	echo "Date-time 2: $date2<br>";
 	
 	$year = substr($date, 0, 4);
 	$month = substr($date, 5, 2);
@@ -74,22 +86,30 @@ else if ($type == "time") {
 	$minute = substr($date, 14, 2);
 	$second = substr($date, 17, 2);
 	
-	//PUT CODE FOR GETTING ALL FRAMES HERE
 	$str = file_get_contents("http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/");
 	$pattern = '#(www\.|https?://)?[a-z0-9]+\.[a-z0-9]{2,4}\S*#i';
 	preg_match_all($pattern, $str, $matches, PREG_PATTERN_ORDER);
+	$c = 0;
 	foreach ($matches[0] as $match) {
 		if (strpos($match, ".png")) {
-			$frame = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/".substr($match, 21, 31);
-			echo "Image: <a href='$frame' target='_blank'>$frame</a><br>";
-			//echo "$frame<br><br>";
+			$pic = substr($match, 21, 31);
+			$frametime = substr($pic, 21, 2).":".substr($pic, 23, 2).":".substr($pic, 25, 2);
+			$frame = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/$pic";
+			if (strtotime($frametime) > strtotime(substr($date, 11)) and strtotime($frametime) < strtotime(substr($date2, 11))) {
+				echo "Frame at $frametime: <br>";
+				echo "<img src='$frame'>";
+				$c += 1;
+			}
 		}
 	}
-	//END HERE
+	if ($c == 0) {
+		echo "Frame at $frametime: <br>";
+		echo "<img src='no_frame.png'>";
+	}
 	
-	$frameurl = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/eovsa_qlimg_$year$month$day"."T$hour$minute$second.png";
-	echo "<img src='$frameurl'><br>";
-	echo "Image: <a href='$frameurl' target='_blank'>$frameurl</a><br>";
+	//$frameurl = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/eovsa_qlimg_$year$month$day"."T$hour$minute$second.png";
+	//echo "<img src='$frameurl'><br>";
+	//echo "Image: <a href='$frameurl' target='_blank'>$frameurl</a><br>";
 	
 
 	
