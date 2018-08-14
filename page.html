@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8"/>
+
+<html>
+	<title>Data Viewer</title>
+
+	<head>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				$("button").click(function(){
+					var date = $("#date").val();
+					if (date) {
+						$.ajax({
+							type: "POST",
+							url: "back.php",
+							data: {date: date,
+								   message: this.name,
+								   type: "date"},
+							success: function(result) {
+								$("#B").html(result.substring(10));
+								document.getElementById("date").value = result.substring(0,10);
+							}
+						});
+					}
+				});
+			});
+		
+			$(document).ready(function() {
+				var date = new Date();
+				var day = date.getDate();
+				var month = date.getMonth() + 1;
+				var year = date.getFullYear();
+				if (month < 10) month = "0" + month;
+				if (day < 10) day = "0" + day;
+				var today = year + "-" + month + "-" + day;       
+				$("#date").attr("value", today);
+			});
+			
+			$(document).ready(function(){
+				$("#B").on('click', '.time', function () {
+					var time = this.id;
+					var date = document.getElementById("date").value;
+					
+					$.ajax({
+						type: "POST",
+						url: "back.php",
+						data: {time: time,
+							   date: date,
+							   type: "time"},
+						success: function(result) {
+							$("#C").html(result);
+						}
+					});
+				});
+			});	
+		</script>
+		
+	</head>
+
+	<style>
+		.F1 {
+			display: inline-block;
+			width: auto;
+			height: auto;
+			vertical-align: top;
+		}
+		.F2 {
+			display: inline-block;
+			width: 50%;
+		}
+		.F3 {
+			text-align: center;
+			width: 1090px;
+			margin: auto;
+		}
+	</style>
+
+	<center><h1>OVSA Data Viewer</h1></center>
+
+	<body style="background-color:darkseagreen;">
+
+		<fieldset class="F1">
+
+			<legend>Select Date</legend>
+
+			<center>
+				<input type="date" id="date" name="date"><br>
+				
+				<button id="button" name="button" type="BUTTON">View Date</button><br>
+				<button id="button" name="previous-week" type="BUTTON">Previous<br>Week</button>
+				<button id="button" name="previous-day" type="BUTTON">Previous<br>Day</button>
+				<button id="button" name="today" type="BUTTON">Set<br>Today</button>
+				<button id="button" name="next-day" type="BUTTON">Next<br>Day</button>
+				<button id="button" name="next-week" type="BUTTON">Next<br>Week</button><br>
+			</center>
+			
+		</fieldset>
+
+		<div class="F2">
+			<fieldset class="F3" id="B"></fieldset>
+			<fieldset class="F3" id="C"></fieldset>
+		</div>
+
+	</body>
+
+</html>
