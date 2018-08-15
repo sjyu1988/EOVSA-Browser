@@ -54,21 +54,15 @@ if ($type == "date") {
 	echo "$date";
 	
 	//FIX THIS
-	$file_headers = @get_headers($pic);
-	if(!$file_headers || $file_headers[0] == '404 Not Found') {
+	if (get_headers($picurl)[0] == "HTTP/1.1 404 Not Found")
 		echo "<img src='no_graph.png'>";
-	}
-	else {
+	else
 		echo "$pic<br>";
-	}
 	
-	$file_headers = @get_headers($movie);
-	if(!$file_headers || $file_headers[0] == '404 Not Found') {
+	if (get_headers($movieurl)[0] == "HTTP/1.1 404 Not Found")
 		echo "<img src='no_movie.png'>";
-	}
-	else {
+	else
 		echo "$movie<br>";
-	}
 	
 }
 
@@ -96,14 +90,13 @@ else if ($type == "time") {
 			$frametime = substr($pic, 21, 2).":".substr($pic, 23, 2).":".substr($pic, 25, 2);
 			$frame = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/$pic";
 			if (strtotime($frametime) > strtotime(substr($date, 11)) and strtotime($frametime) < strtotime(substr($date2, 11))) {
-				echo "Frame at $frametime: <br>";
+				echo "<h3>Frame at $frametime:</h3>";
 				echo "<img src='$frame'>";
 				$c += 1;
 			}
 		}
 	}
 	if ($c == 0) {
-		echo "Frame at $frametime: <br>";
 		echo "<img src='no_frame.png'>";
 	}
 	
