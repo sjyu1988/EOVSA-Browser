@@ -35,8 +35,6 @@ if ($type == "date") {
 	$month = substr($date, 5, 2);
 	$day = substr($date, 8, 2);
 
-	//ADD ERROR: NO GRAPH/MOVIE FOR THIS DATE (LOW PRIORITY)
-	
 	$picurl = "http://ovsa.njit.edu/flaremon/daily/$year/XSP$year$month$day.png";
 	$pic = "<img src='$picurl' usemap='#workmap'>
 			<map name='workmap'>";
@@ -99,13 +97,7 @@ else if ($type == "time") {
 	if ($c == 0) {
 		echo "<img src='no_frame.png'>";
 	}
-	
-	//$frameurl = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/eovsa_qlimg_$year$month$day"."T$hour$minute$second.png";
-	//echo "<img src='$frameurl'><br>";
-	//echo "Image: <a href='$frameurl' target='_blank'>$frameurl</a><br>";
-	
-
-	
+		
 }
 
 ?>
