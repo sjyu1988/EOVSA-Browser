@@ -46,7 +46,7 @@ if ($type == "date") {
 	}
 	$pic .= "</map>";
 
-	$movieurl = "https://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/movie_$year$month$day.html";
+	$movieurl = "http://ovsa.njit.edu/qlookimg_10m/$year/$month/$day/movie_$year$month$day.html";
 	$movie ="<iframe src='$movieurl' id='movie' width=700 height=860></iframe>";
 
 	echo "$date";
